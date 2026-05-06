@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Zenith — E-Commerce Checkout Optimization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --ink-light: #4a4a6a;
+            --ink-faint: #8888aa;
+            --paper: #fafaf7;
+            --surface: #ffffff;
+            --accent: #e8533c;
+            --accent-2: #3d6fff;
+            --accent-3: #00b894;
+            --accent-muted: #fce8e5;
+            --border: #e5e5ee;
+            --gold: #f0a500;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        /* ─── HEADER ─── */
+        .masthead {
+            background: var(--ink);
+            color: #fff;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .masthead-noise {
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .masthead-grid {
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .masthead-inner {
+            position: relative;
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 64px 48px 56px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            align-items: end;
+        }
+        .masthead-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .masthead h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            line-height: 1.1;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        .masthead h1 em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .masthead-sub {
+            color: rgba(255,255,255,0.6);
+            font-size: 15px;
+        }
+        .masthead-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        .meta-pill {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.75);
+            font-family: 'Space Mono', monospace;
+            white-space: nowrap;
+        }
+        .masthead-bar {
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+        }
+
+        /* ─── LAYOUT ─── */
+        .page {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 0 48px 80px;
+        }
+
+        /* ─── SECTION HEADINGS ─── */
+        .section {
+            margin-top: 64px;
+        }
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--ink-faint);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .section h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--ink);
+            margin-bottom: 24px;
+        }
+
+        /* ─── VISION BOX ─── */
+        .vision-card {
+            background: var(--ink);
+            color: #fff;
+            border-radius: var(--radius);
+            padding: 36px 40px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .vision-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px; right: 32px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 180px;
+            color: rgba(255,255,255,0.05);
+            line-height: 1;
+        }
+        .vision-card p {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.92);
+            font-style: italic;
+        }
+        .vision-card .vision-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        /* ─── PROBLEM / SOLUTION ROW ─── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .ps-card {
+            border-radius: var(--radius);
+            padding: 28px;
+            border: 1px solid var(--border);
+        }
+        .ps-card.problem {
+            background: #fff5f3;
+            border-color: #ffd0c8;
+        }
+        .ps-card.solution {
+            background: #f0f7ff;
+            border-color: #c5dcff;
+        }
+        .ps-icon {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .ps-card h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--ink-light);
+        }
+        .ps-card p { font-size: 14px; color: var(--ink-light); line-height: 1.6; }
+
+        /* ─── KPI STATS ─── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .kpi-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .kpi-card.red::after { background: var(--accent); }
+        .kpi-card.blue::after { background: var(--accent-2); }
+        .kpi-card.green::after { background: var(--accent-3); }
+        .kpi-card.gold::after { background: var(--gold); }
+        .kpi-before {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-faint);
+            margin-bottom: 4px;
+            text-decoration: line-through;
+        }
+        .kpi-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .kpi-card.red .kpi-num { color: var(--accent); }
+        .kpi-card.blue .kpi-num { color: var(--accent-2); }
+        .kpi-card.green .kpi-num { color: var(--accent-3); }
+        .kpi-card.gold .kpi-num { color: var(--gold); }
+        .kpi-label {
+            font-size: 12px;
+            color: var(--ink-faint);
+            line-height: 1.4;
+        }
+        .kpi-delta {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            margin-top: 8px;
+            padding: 3px 8px;
+            border-radius: 100px;
+            display: inline-block;
+        }
+        .kpi-delta.down { background: #e8f7f0; color: #00864e; }
+        .kpi-delta.up { background: #e8f7f0; color: #00864e; }
+
+        /* ─── PERSONAS ─── */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .persona-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .persona-avatar {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+        .persona-card:nth-child(1) .persona-avatar { background: var(--accent-muted); color: var(--accent); }
+        .persona-card:nth-child(2) .persona-avatar { background: #e8f0ff; color: var(--accent-2); }
+        .persona-card h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        .persona-type {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 16px;
+        }
+        .persona-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+        .persona-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+        .pain .persona-dot { background: var(--accent); }
+        .goal .persona-dot { background: var(--accent-3); }
+        .persona-row p { font-size: 13.5px; color: var(--ink-light); }
+        .persona-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .pain .persona-badge { background: #fce8e5; color: #c0392b; }
+        .goal .persona-badge { background: #e8f7f0; color: #00864e; }
+
+        /* ─── BACKLOG TABLE ─── */
+        .backlog-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .backlog-table thead th {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            text-align: left;
+            font-weight: 400;
+        }
+        .backlog-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        .backlog-table tbody tr:hover { background: #f8f8fc; }
+        .backlog-table td { padding: 16px; vertical-align: top; }
+        .story-id {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--ink-faint);
+            white-space: nowrap;
+        }
+        .story-text { color: var(--ink-light); line-height: 1.55; }
+        .story-text strong { color: var(--ink); font-weight: 500; }
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .priority-badge.high { background: var(--accent-muted); color: #c0392b; }
+        .priority-badge.medium { background: #fff8e6; color: #a0700a; }
+        .priority-badge.low { background: #e8f7f0; color: #00864e; }
+        .priority-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+        .priority-badge.high .priority-dot { background: var(--accent); }
+        .priority-badge.medium .priority-dot { background: var(--gold); }
+        .priority-badge.low .priority-dot { background: var(--accent-3); }
+        .sp-badge {
+            background: var(--ink);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ─── ACCEPTANCE CRITERIA ─── */
+        .ac-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 28px;
+        }
+        .ac-header {
+            background: var(--ink);
+            color: #fff;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .ac-header h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .ac-tag {
+            background: rgba(255,255,255,0.15);
+            border-radius: 4px;
+            padding: 3px 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+        }
+        .ac-body { padding: 24px; }
+        .ac-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .ac-item:last-of-type { border-bottom: none; }
+        .ac-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--ink-faint);
+            min-width: 28px;
+            padding-top: 2px;
+        }
+        .ac-content { flex: 1; }
+        .ac-scenario {
+            font-size: 13px;
+            color: var(--ink-faint);
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 6px;
+        }
+        .ac-scenario span { color: var(--accent-2); }
+        .ac-content p { font-size: 14px; color: var(--ink-light); }
+        .qa-strip {
+            background: #fffbf0;
+            border: 1px solid #ffe58a;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #7a5c00;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .qa-strip-icon { font-size: 16px; flex-shrink: 0; }
+
+        /* ─── CHECKOUT FLOW DIAGRAM ─── */
+        .flow-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .flow-col {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .flow-col-header {
+            padding: 14px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .flow-col.old .flow-col-header { background: #fff5f3; color: #c0392b; }
+        .flow-col.new .flow-col-header { background: #f0f7ff; color: #1a5fd4; }
+        .flow-col-header .hbadge {
+            background: currentColor;
+            color: #fff;
+            border-radius: 4px;
+            padding: 2px 8px;
+            opacity: 0.9;
+        }
+        .flow-steps { padding: 20px; }
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .flow-step-line {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .flow-dot {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .flow-col.old .flow-dot { background: #fce8e5; color: var(--accent); }
+        .flow-col.new .flow-dot { background: #e8f0ff; color: var(--accent-2); }
+        .flow-connector {
+            width: 1px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+        .flow-col.old .flow-connector { background: #fcd0c8; }
+        .flow-col.new .flow-connector { background: #c5dcff; }
+        .flow-step-text { padding-top: 5px; }
+        .flow-step-text strong { font-size: 13px; color: var(--ink); display: block; }
+        .flow-step-text span { font-size: 12px; color: var(--ink-faint); }
+        .flow-drop-badge {
+            background: var(--accent-muted);
+            color: var(--accent);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        /* ─── SPRINT ROADMAP ─── */
+        .roadmap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 24px;
+        }
+        .roadmap-header {
+            background: var(--ink);
+            color: rgba(255,255,255,0.6);
+            display: grid;
+            grid-template-columns: 140px repeat(6, 1fr);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+        }
+        .roadmap-header div {
+            padding: 10px 14px;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+        }
+        .roadmap-header div.cat { text-align: left; }
+        .roadmap-row {
+            display: grid;
+            grid-template-columns: 140px repeat(6, 1fr);
+            border-bottom: 1px solid var(--border);
+            align-items: stretch;
+        }
+        .roadmap-row:last-child { border-bottom: none; }
+        .roadmap-cat {
+            padding: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink-light);
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+        .roadmap-cell {
+            border-right: 1px solid var(--border);
+            padding: 8px;
+        }
+        .roadmap-cell:last-child { border-right: none; }
+        .roadmap-bar {
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: 11.5px;
+            line-height: 1.35;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .roadmap-bar.design { background: #f0f7ff; color: #1a5fd4; }
+        .roadmap-bar.dev { background: #fff5f3; color: #c0392b; }
+        .roadmap-bar.payment { background: #f0fff8; color: #007a4c; }
+        .roadmap-bar.qa { background: #fff8e6; color: #a0700a; }
+        .roadmap-bar.span2 { grid-column: span 2; }
+        .roadmap-2cell {
+            grid-column: span 2;
+            border-right: 1px solid var(--border);
+            padding: 8px;
+        }
+
+        /* ─── RISK TABLE ─── */
+        .risk-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+        .risk-table thead th {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 400;
+        }
+        .risk-table td { padding: 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
+        .risk-table tr:last-child td { border-bottom: none; }
+        .risk-level {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+        .risk-level.high { background: var(--accent-muted); color: #c0392b; }
+        .risk-level.medium { background: #fff8e6; color: #a0700a; }
+        .risk-level.low { background: #e8f7f0; color: #00864e; }
+        .risk-title { font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+        .risk-desc { font-size: 12.5px; color: var(--ink-faint); }
+        .risk-mitigation { font-size: 13px; color: var(--ink-light); }
+
+        /* ─── DEPENDENCIES ─── */
+        .dep-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 16px;
+        }
+        .dep-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            background: var(--surface);
+        }
+        .dep-team {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .dep-card:nth-child(1) .dep-team { color: var(--accent); }
+        .dep-card:nth-child(2) .dep-team { color: var(--accent-2); }
+        .dep-card:nth-child(3) .dep-team { color: var(--accent-3); }
+        .dep-card ul { padding-left: 0; list-style: none; }
+        .dep-card ul li {
+            font-size: 13px;
+            color: var(--ink-light);
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .dep-card ul li:last-child { border-bottom: none; }
+        .dep-card ul li::before {
+            content: '→';
+            font-size: 11px;
+            color: var(--ink-faint);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ─── FOOTER ─── */
+        .doc-footer {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 24px 48px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--ink-faint);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 720px) {
+            .page, .doc-footer { padding-left: 20px; padding-right: 20px; }
+            .masthead-inner { grid-template-columns: 1fr; padding: 40px 20px 36px; }
+            .masthead-meta { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+            .kpi-row { grid-template-columns: 1fr 1fr; }
+            .two-col, .persona-grid, .flow-compare { grid-template-columns: 1fr; }
+            .dep-grid { grid-template-columns: 1fr; }
+            .roadmap-header, .roadmap-row { grid-template-columns: 100px repeat(6, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ░░░ MASTHEAD ░░░ -->
+<div class="masthead">
+    <div class="masthead-noise"></div>
+    <div class="masthead-grid"></div>
+    <div class="masthead-inner">
+        <div>
+            <p class="masthead-tag">Digital &amp; Ecommerce · Product Owner Portfolio</p>
+            <h1>Project Zenith:<br><em>Frictionless</em> Checkout</h1>
+            <p class="masthead-sub">E-Commerce Checkout Optimization — Mobile-First Single-Page Flow</p>
+        </div>
+        <div class="masthead-meta">
+            <span class="meta-pill">Q3 Initiative</span>
+            <span class="meta-pill">6 Sprints · 12 Weeks</span>
+            <span class="meta-pill">Status: Planning</span>
+        </div>
+    </div>
+    <div class="masthead-bar"></div>
+</div>
+
+<div class="page">
+
+    <!-- ░░░ 1. VISION ░░░ -->
+    <div class="section">
+        <p class="section-label">01 · Executive Summary</p>
+        <h2>Product Vision</h2>
+
+        <div class="vision-card">
+            <div class="vision-tag">Vision Statement</div>
+            <p>To create a seamless, intuitive, and highly secure omnichannel checkout experience that reduces cart abandonment by 15% and increases customer lifetime value through personalized post-purchase engagement.</p>
+        </div>
+
+        <div class="two-col">
+            <div class="ps-card problem">
+                <div class="ps-icon">⚠️</div>
+                <h3>Problem</h3>
+                <p>Analytics show a <strong>68% cart abandonment rate</strong> on mobile devices during the payment step. User testing reveals the current multi-page checkout is cognitively heavy, lacks transparent shipping costs early in the flow, and demands too many manual inputs.</p>
+            </div>
+            <div class="ps-card solution">
+                <div class="ps-icon">✦</div>
+                <h3>Proposed Solution</h3>
+                <p>A unified <strong>single-page accordion checkout</strong> with guest-checkout prominence, auto-address validation, and integrated digital wallets — Apple Pay, Google Pay, and PayPal — reducing time-to-purchase to under 90 seconds.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 2. KPI SNAPSHOT ░░░ -->
+    <div class="section">
+        <p class="section-label">02 · Success Metrics</p>
+        <h2>KPI Targets</h2>
+        <div class="kpi-row">
+            <div class="kpi-card red">
+                <div class="kpi-before">68%</div>
+                <div class="kpi-num">53%</div>
+                <div class="kpi-label">Checkout<br>Abandonment Rate</div>
+                <div class="kpi-delta down">↓ −15pp target</div>
+            </div>
+            <div class="kpi-card blue">
+                <div class="kpi-before">3.5 min</div>
+                <div class="kpi-num">&lt;1.5<span style="font-size:1.2rem">min</span></div>
+                <div class="kpi-label">Time to<br>Checkout</div>
+                <div class="kpi-delta up">↓ 57% faster</div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-before">—</div>
+                <div class="kpi-num">30%</div>
+                <div class="kpi-label">Digital Wallet<br>Adoption (30d)</div>
+                <div class="kpi-delta up">↑ New metric</div>
+            </div>
+            <div class="kpi-card gold">
+                <div class="kpi-before">—</div>
+                <div class="kpi-num">&lt;1%</div>
+                <div class="kpi-label">Payment<br>Error Rate</div>
+                <div class="kpi-delta up">✓ SLA target</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 3. PERSONAS ░░░ -->
+    <div class="section">
+        <p class="section-label">03 · Target Users</p>
+        <h2>Personas</h2>
+        <div class="persona-grid">
+            <div class="persona-card">
+                <div class="persona-avatar">A</div>
+                <h3>The On-the-Go Shopper</h3>
+                <p class="persona-type">Mobile · Persona A</p>
+                <div class="persona-row pain">
+                    <span class="persona-badge">Pain point</span>
+                </div>
+                <div class="persona-row pain">
+                    <span class="persona-dot"></span>
+                    <p>Frustrated by typing full card numbers and addresses on a small screen. Abandons if checkout takes over 2 minutes.</p>
+                </div>
+                <div class="persona-row goal">
+                    <span class="persona-badge">Goal</span>
+                </div>
+                <div class="persona-row goal">
+                    <span class="persona-dot"></span>
+                    <p>1-click checkout using saved profiles or digital wallets — zero manual entry.</p>
+                </div>
+            </div>
+            <div class="persona-card">
+                <div class="persona-avatar">B</div>
+                <h3>The Value-Conscious Buyer</h3>
+                <p class="persona-type">Desktop · Persona B</p>
+                <div class="persona-row pain">
+                    <span class="persona-badge">Pain point</span>
+                </div>
+                <div class="persona-row pain">
+                    <span class="persona-dot"></span>
+                    <p>Abandons cart when unexpected taxes or shipping fees surface at the final payment step after extensive comparison shopping.</p>
+                </div>
+                <div class="persona-row goal">
+                    <span class="persona-badge">Goal</span>
+                </div>
+                <div class="persona-row goal">
+                    <span class="persona-dot"></span>
+                    <p>Immediate, upfront total cost visibility — taxes and shipping — before entering payment details.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 4. CHECKOUT FLOW COMPARISON ░░░ -->
+    <div class="section">
+        <p class="section-label">04 · User Experience</p>
+        <h2>Checkout Flow: Before vs. After</h2>
+        <div class="flow-compare">
+            <div class="flow-col old">
+                <div class="flow-col-header">
+                    <span>Current flow</span>
+                    <span class="hbadge" style="background:#c0392b; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px;">5 pages</span>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">1</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Cart Review</strong>
+                            <span>Items, quantities</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">2</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Account / Guest</strong>
+                            <span>Login prompt — friction point</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">3</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Shipping Details</strong>
+                            <span>Manual address entry</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">4</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Shipping Method</strong>
+                            <span>Rate shown here — surprise!</span>
+                            <div class="flow-drop-badge">68% abandon here ↑</div>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">5</div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Payment</strong>
+                            <span>Manual card entry only</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flow-col new">
+                <div class="flow-col-header">
+                    <span>New single-page flow</span>
+                    <span class="hbadge" style="background:#1a5fd4; color:#fff; font-size:10px; padding:2px 8px; border-radius:4px;">1 page</span>
+                </div>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">1</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Contact (Guest-first)</strong>
+                            <span>Email only, account creation optional</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">2</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Delivery + Live Costs</strong>
+                            <span>Auto-fill + shipping updates on zip entry</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">3</div>
+                            <div class="flow-connector"></div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Payment</strong>
+                            <span>Apple/Google Pay prominent + card fallback</span>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-line">
+                            <div class="flow-dot">✓</div>
+                        </div>
+                        <div class="flow-step-text">
+                            <strong>Order Confirmation</strong>
+                            <span>Personalized post-purchase engagement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 5. BACKLOG ░░░ -->
+    <div class="section">
+        <p class="section-label">05 · Product Backlog</p>
+        <h2>Selected User Stories</h2>
+        <p style="color: var(--ink-light); margin-bottom: 20px; font-size: 14px;"><strong>Epic:</strong> Implement Single-Page Checkout Flow</p>
+        <table class="backlog-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User Story</th>
+                    <th>Priority</th>
+                    <th style="text-align:center">SP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="story-id">US-101</span></td>
+                    <td class="story-text">As a <strong>mobile user</strong>, I want to use digital wallets (Apple/Google Pay) so that I can checkout <strong>without entering my card details manually</strong>.</td>
+                    <td><span class="priority-badge high"><span class="priority-dot"></span>High</span></td>
+                    <td style="text-align:center"><div class="sp-badge" style="margin: 0 auto;">5</div></td>
+                </tr>
+                <tr>
+                    <td><span class="story-id">US-102</span></td>
+                    <td class="story-text">As a <strong>guest shopper</strong>, I want to see my shipping costs <strong>dynamically update</strong> when I enter my zip code so that I know the final price immediately.</td>
+                    <td><span class="priority-badge high"><span class="priority-dot"></span>High</span></td>
+                    <td style="text-align:center"><div class="sp-badge" style="margin: 0 auto;">3</div></td>
+                </tr>
+                <tr>
+                    <td><span class="story-id">US-103</span></td>
+                    <td class="story-text">As a <strong>returning user</strong>, I want the form to auto-fill my previously saved address so that I can <strong>save time</strong> on repeat purchases.</td>
+                    <td><span class="priority-badge medium"><span class="priority-dot"></span>Medium</span></td>
+                    <td style="text-align:center"><div class="sp-badge" style="margin: 0 auto;">3</div></td>
+                </tr>
+                <tr>
+                    <td><span class="story-id">US-104</span></td>
+                    <td class="story-text">As a <strong>shopper</strong>, I want to apply a promo code <strong>inline during checkout</strong> and see the discount reflected in real-time without leaving the page.</td>
+                    <td><span class="priority-badge medium"><span class="priority-dot"></span>Medium</span></td>
+                    <td style="text-align:center"><div class="sp-badge" style="margin: 0 auto;">2</div></td>
+                </tr>
+                <tr>
+                    <td><span class="story-id">US-105</span></td>
+                    <td class="story-text">As a <strong>mobile user</strong>, I want a persistent <strong>order summary drawer</strong> so I can review my items without scrolling away from the checkout form.</td>
+                    <td><span class="priority-badge low"><span class="priority-dot"></span>Low</span></td>
+                    <td style="text-align:center"><div class="sp-badge" style="margin: 0 auto;">2</div></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- AC Block -->
+        <div class="ac-block">
+            <div class="ac-header">
+                <h3>Acceptance Criteria — US-101: Digital Wallet Integration</h3>
+                <span class="ac-tag">5 Story Points</span>
+            </div>
+            <div class="ac-body">
+                <div class="ac-item">
+                    <div class="ac-num">AC1</div>
+                    <div class="ac-content">
+                        <div class="ac-scenario"><span>Given</span> the user is on a mobile device proceeding to checkout, <span>When</span> the payment section renders,</div>
+                        <p>Then Apple Pay and Google Pay buttons must be prominently displayed at the top of the payment section, above the manual card entry option.</p>
+                    </div>
+                </div>
+                <div class="ac-item">
+                    <div class="ac-num">AC2</div>
+                    <div class="ac-content">
+                        <div class="ac-scenario"><span>Given</span> the user selects a digital wallet, <span>When</span> the transaction is initiated,</div>
+                        <p>Then the native device authentication modal (Face ID / Touch ID / Passkey) must appear. No PCI-sensitive data should be handled by our front-end.</p>
+                    </div>
+                </div>
+                <div class="ac-item">
+                    <div class="ac-num">AC3</div>
+                    <div class="ac-content">
+                        <div class="ac-scenario"><span>Given</span> device authentication succeeds and the gateway returns a payment token, <span>When</span> the order is submitted,</div>
+                        <p>Then the order must be created successfully and the user routed to the Order Confirmation page within 3 seconds.</p>
+                    </div>
+                </div>
+                <div class="ac-item">
+                    <div class="ac-num">AC4</div>
+                    <div class="ac-content">
+                        <div class="ac-scenario"><span>Given</span> the digital wallet transaction fails (e.g., insufficient funds, network error), <span>When</span> the error is returned,</div>
+                        <p>Then a clear inline UX error message must be displayed without clearing the cart or requiring the user to re-enter any previously entered data.</p>
+                    </div>
+                </div>
+                <div class="qa-strip">
+                    <div class="qa-strip-icon">🔬</div>
+                    <div><strong>QA / Automation Note:</strong> Selenium/Appium scripts required to simulate token generation and verify UI state changes across iOS and Android test environments. Figma UI mocks must map to the rendered DOM structure for accessibility tag compliance (WCAG 2.1 AA). Mock the payment gateway in staging — never use live credentials in test environments.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 6. ROADMAP ░░░ -->
+    <div class="section">
+        <p class="section-label">06 · Agile Roadmap</p>
+        <h2>Q3 Sprint Plan</h2>
+        <div class="roadmap">
+            <div class="roadmap-header">
+                <div class="cat">Track</div>
+                <div>Sprint 1</div>
+                <div>Sprint 2</div>
+                <div>Sprint 3</div>
+                <div>Sprint 4</div>
+                <div>Sprint 5</div>
+                <div>Sprint 6</div>
+            </div>
+            <div class="roadmap-row">
+                <div class="roadmap-cat">Design &amp; UX</div>
+                <div class="roadmap-cell"><div class="roadmap-bar design">Figma prototypes &amp; A/B usability testing</div></div>
+                <div class="roadmap-cell"><div class="roadmap-bar design">Prototype refinement &amp; accessibility review</div></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+            </div>
+            <div class="roadmap-row">
+                <div class="roadmap-cat">Frontend</div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"><div class="roadmap-bar dev">Accordion layout &amp; guest-first flow</div></div>
+                <div class="roadmap-cell"><div class="roadmap-bar dev">Auto-address API + live shipping calc</div></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+            </div>
+            <div class="roadmap-row">
+                <div class="roadmap-cat">Payments</div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"><div class="roadmap-bar payment">Gateway API feasibility &amp; contract review</div></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"><div class="roadmap-bar payment">Apple Pay / Google Pay integration</div></div>
+                <div class="roadmap-cell"></div>
+            </div>
+            <div class="roadmap-row">
+                <div class="roadmap-cat">QA &amp; Launch</div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"></div>
+                <div class="roadmap-cell"><div class="roadmap-bar qa">QA automation framework setup</div></div>
+                <div class="roadmap-cell"><div class="roadmap-bar qa">UAT &amp; regression suite</div></div>
+                <div class="roadmap-cell"><div class="roadmap-bar qa">Canary release (10% traffic) + monitoring</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░░ 7. RISKS (NEW SECTION) ░░░ -->
+    <div class="section">
+        <p class="section-label">07 · Risk Register</p>
+        <h2>Risks &amp; Mitigations</h2>
+        <table class="risk-table">
+            <thead>
+                <tr>
+                    <th>Risk</th>
+                    <th>Level</th>
+                    <th>Mitigation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="risk-title">Payment gateway SLA breach</div>
+                        <div class="risk-desc">Third-party downtime cascades to checkout failure and revenue loss</div>
+                    </td>
+                    <td><span class="risk-level high">● High</span></td>
+                    <td class="risk-mitigation">Implement a fallback PSP (e.g., Stripe → Braintree). Circuit-breaker pattern with graceful degradation to card-only checkout if wallet APIs are unreachable.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="risk-title">Address API rate-limiting</div>
+                        <div class="risk-desc">Zip code auto-complete degrades under peak traffic</div>
+                    </td>
+                    <td><span class="risk-level medium">● Medium</span></td>
+                    <td class="risk-mitigation">Debounce input (400ms), implement client-side caching for recent lookups, and manual entry as unconditional fallback.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="risk-title">Apple Pay domain verification delays</div>
+                        <div class="risk-desc">Apple's merchant registration takes 1–2 weeks and could delay Sprint 5</div>
+                    </td>
+                    <td><span class="risk-level medium">● Medium</span></td>
+                    <td class="risk-mitigation">Begin Apple merchant registration in Sprint 2, parallel to frontend development. Track as a hard dependency with a Sprint 4 deadline.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="risk-title">PCI DSS scope creep</div>
+                        <div class="risk-desc">Any accidental logging of card data triggers audit requirements</div>
+                    </td>
+                    <td><span class="risk-level high">● High</span></td>
+                    <td class="risk-mitigation">All card tokenization handled client-side by gateway JS SDK. Never pass raw card data through our servers. Security review gate before Sprint 5 merge.</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="risk-title">Low digital wallet adoption</div>
+                        <div class="risk-desc">Users unfamiliar with Apple/Google Pay don't convert to new flow</div>
+                    </td>
+                    <td><span class="risk-level low">● Low</span></td>
+                    <td class="risk-mitigation">A/B test wallet-first vs. card-first presentation during canary release. Dismiss threshold: &lt;15% wallet adoption at 30 days triggers UX re-evaluation.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ░░░ 8. DEPENDENCIES (NEW SECTION) ░░░ -->
+    <div class="section">
+        <p class="section-label">08 · Dependencies</p>
+        <h2>Cross-Team Dependencies</h2>
+        <div class="dep-grid">
+            <div class="dep-card">
+                <div class="dep-team">Engineering</div>
+                <ul>
+                    <li>Payment gateway API contracts confirmed</li>
+                    <li>Address validation API provisioned</li>
+                    <li>Feature flag system for canary rollout</li>
+                    <li>Error monitoring (Datadog / Sentry) configured</li>
+                </ul>
+            </div>
+            <div class="dep-card">
+                <div class="dep-team">Design &amp; Research</div>
+                <ul>
+                    <li>Figma component library updated for new flow</li>
+                    <li>A/B test hypothesis and success criteria defined</li>
+                    <li>Accessibility audit sign-off (WCAG 2.1 AA)</li>
+                    <li>Mobile prototype for usability testing</li>
+                </ul>
+            </div>
+            <div class="dep-card">
+                <div class="dep-team">Legal &amp; Compliance</div>
+                <ul>
+                    <li>PCI DSS scope review completed</li>
+                    <li>Apple Pay merchant agreement signed</li>
+                    <li>GDPR assessment for address auto-fill storage</li>
+                    <li>T&amp;Cs updated for guest checkout data</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ░░░ FOOTER ░░░ -->
+<div class="doc-footer">
+    <span>Project Zenith · PO Portfolio v2.0</span>
+    <span>Confidential — Internal Use Only</span>
+</div>
+
+</body>
+</html>
